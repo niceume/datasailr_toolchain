@@ -20,10 +20,10 @@ fi
 # If you use bash, there are more ways. But using basic sh, this seems to be the best solution.
 case "$ARGS" in
   *cran*)  
-      echo "Building CRAN package"
-      mkdir -p package/cran
-      cp -R datasailr_pkg package/cran/
-      cd package/cran
+      echo "Building CRAN source package"
+      mkdir -p package/src_cran
+      cp -R datasailr_pkg package/src_cran/
+      cd package/src_cran
       R CMD build datasailr_pkg
       rm -R -f datasailr_pkg
       cd ../..

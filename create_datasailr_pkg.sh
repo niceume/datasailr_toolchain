@@ -124,6 +124,15 @@ sh ./exec/compileAttr.sh
 cd ..
 
 
+echo "Disable compileAttr.sh (Package user does not need this command)"
+sed -r -e '{
+  s/^\s*#/&/
+  t success
+  s/^(.*)/#&/
+  :success
+}' -i datasailr_pkg/exec/compileAttr.sh
+
+
 echo "Add third party library authors to DESCRIPTION "
 
 cd datasailr_pkg
