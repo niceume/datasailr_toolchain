@@ -6,10 +6,11 @@ mkdir -p datasailr_pkg
 mkdir -p base
 
 #############################################
-# if files do not exist under datasailr
+# if files do not exist under each project directory
 #   git clone
 # else
 #   git fetch
+#############################################
 
 cd base
 
@@ -97,6 +98,22 @@ rm -R -f datasailr_pkg/src/Onigmo/.travis.yml
 rm -R -f datasailr_pkg/src/Onigmo/m4/.gitkeep
 
 
+###### printf related fixes ######
+
+echo "Add #include <R_ext/Print.h> to all the related .c and .h files. Files: "
+find datasailr_pkg/src/libsailr | egrep '(\.c|\.h)$' | xargs egrep -l '[[:space:]]*printf'
+
+find datasailr_pkg/src/libsailr | egrep '(\.c|\.h)$' | xargs egrep -l '[[:space:]]*printf' | xargs sed -i '1i\
+#include <R_ext/Print.h>
+'
+
+echo "Replace printf() with Rprintf()."
+
+find datasailr_pkg/src/libsailr | egrep '(\.c|\.h)$' | xargs  sed -r -e '/^\s*printf/{
+  s/^(\s*)printf(.*)$/\1Rprintf\2/g
+}' -i
+
+
 echo 'comment out all the printf() lines under libsailr'
 grep -rl printf datasailr_pkg/src/libsailr  | xargs  sed -r -e '/^\s*printf/{
   :start
@@ -112,6 +129,8 @@ grep -rl printf datasailr_pkg/src/libsailr  | xargs  sed -r -e '/^\s*printf/{
   :success
 }' -i
 
+
+##############################
 
 echo "Prevent R CMD build running cleanup scripts."
 rm datasailr_pkg/cleanup.win
