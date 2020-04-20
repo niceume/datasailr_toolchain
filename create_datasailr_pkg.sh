@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# $# represents the number of arguments.
+if [ $# -gt 0 ]
+then
+  # Concatenate arguments with spaces.
+  # (ref.) https://unix.stackexchange.com/questions/197792/joining-bash-arguments-into-single-string-with-spaces
+  ARGS="'$*'"
+  echo "Specified args: $ARGS"  
+fi
+
 # create folder called datasailr_pkg & base
 
 mkdir -p datasailr_pkg
@@ -11,6 +20,12 @@ mkdir -p base
 # else
 #   git fetch
 #############################################
+case "$ARGS" in
+  *no-git*)
+echo "git is not used"
+;;
+
+  * ) 
 
 cd base
 
@@ -45,6 +60,9 @@ else
 fi
 
 cd ..
+
+;;
+esac
 
 #############################################
 # Merge them into datasailr_pkg
@@ -86,8 +104,8 @@ make y.tab.c --directory datasailr_pkg/src/libsailr/
 echo "convert lex file into c"
 make lex.yy.c --directory datasailr_pkg/src/libsailr/ 
 
-echo "rename autogen.sh to autogen.sh.del"
-mv datasailr_pkg/src/Onigmo/autogen.sh datasailr_pkg/src/Onigmo/autogen.sh.del
+echo "rename autogen.sh to autogen.sh.done"
+mv datasailr_pkg/src/Onigmo/autogen.sh datasailr_pkg/src/Onigmo/autogen.sh.done
 
 echo "delete src/Onigmo/doc b/c some systems misrecognize RE.ja as executable"
 rm -R -f datasailr_pkg/src/Onigmo/doc/

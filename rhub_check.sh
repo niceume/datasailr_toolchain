@@ -30,6 +30,25 @@ rhub::check_for_cran(path='${target_package}', valgrind=TRUE)
   ;;
 esac
 
+
+case "$ARGS" in
+  *linux*)  
+Rscript -e "
+library(rhub)
+rhub::check_on_linux(path='${target_package}', valgrind=TRUE)
+"
+  ;;
+esac
+
+case "$ARGS" in
+  *windows*)  
+Rscript -e "
+library(rhub)
+rhub::check_on_windows(path='${target_package}')
+"
+  ;;
+esac
+
 case "$ARGS" in
   *macos*)  
 Rscript -e "
