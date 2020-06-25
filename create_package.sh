@@ -1,6 +1,9 @@
 #!/bin/sh
 
-mkdir -p package
+mkdir -p build
+
+src_pkg_dir=build/src_pkg
+binary_pkg_dir=build/binary_pkg
 
 # $# represents the number of arguments.
 if [ $# -gt 0 ]
@@ -10,8 +13,8 @@ then
   ARGS="'$*'"
   echo "Specified args: $ARGS"  
 else
-  echo "'cran linux' is set to ARGS"
-  ARGS="cran linux"
+  echo "'src binary' is set to ARGS"
+  ARGS="src binary"
 fi
 
 
@@ -19,28 +22,38 @@ fi
 # (ref.) https://www.shellscript.sh/case.html
 # If you use bash, there are more ways. But using basic sh, this seems to be the best solution.
 case "$ARGS" in
-  *cran*)  
-      echo "Building CRAN source package"
-      mkdir -p package/src_cran
-      cp -R datasailr_pkg package/src_cran/
-      cd package/src_cran
+  *src*)  
+      echo "Building ource package"
+      mkdir -p ${src_pkg_dir}
+      cp -R tmp/datasailr_pkg ${src_pkg_dir}/
+      cd ${src_pkg_dir}
       R CMD build datasailr_pkg
-      rm -R -f datasailr_pkg
-      cd ../..
-      echo "R CMD build finished successfully under cran directory"
+      case "$ARGS" in
+        *keep-build*) ;;
+        *)
+          rm -R -f datasailr_pkg
+        ;;
+      esac
+      cd -
+      echo "R CMD build finished successfully under src_pkg directory"
       ;;
 esac
 
 case "$ARGS" in
-  *linux*)  
-      echo "Building binary package for Linux"
-      mkdir -p package/binary_linux
-      cp -R datasailr_pkg package/binary_linux/
-      cd package/binary_linux
-      R CMD INSTALL datasailr_pkg --build --no-multiarch
-      rm -R -f datasailr_pkg
-      cd ../..
-      echo "R CMD build finished successfully under binary_linux directory"
+  *binary*)  
+      echo "Building binary package for the current platform"
+      mkdir -p ${binary_pkg_dir}
+      cp -R tmp/datasailr_pkg ${binary_pkg_dir}/
+      cd ${binary_pkg_dir}
+      R CMD INSTALL datasailr_pkg --build
+      case "$ARGS" in
+        *keep-build*) ;;
+        *)
+          rm -R -f datasailr_pkg
+        ;;
+      esac
+      cd -
+      echo "R CMD build finished successfully under binary_pkg directory"
       ;;
 esac
 

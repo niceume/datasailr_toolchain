@@ -1,3 +1,4 @@
 /base/
-/datasailr_pkg/
-/package/
+/build/
+/tmp/
+/examples/
