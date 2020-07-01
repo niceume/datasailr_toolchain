@@ -186,7 +186,22 @@ sed -r -e '{
 echo "Add third party library authors to DESCRIPTION "
 
 cd tmp/datasailr_pkg
-Rscript -e 'library(desc)' || exit 1
+
+Rscript -e 'library(desc)' || {
+  echo "If the error above says 'Error in library(desc) : there is no package called ‘desc’'. You need to install 'desc' package. Note that install up-to-date version from Github's r-lib/desc repository. CRAN version is a little out-of-date."
+  echo '1. install.packages("remotes")'
+  echo '2. remotes::install_github("r-lib/desc")'
+  echo 'If you are asked what to update, select 2 (packages installed from CRAN only) is the safest if you do not frequently use install_github() function. If you have many libraries from Github, select 1 (All=packages installed from CRAN & Github) may be necessary.'
+  exit 1
+}
+
+Rscript -e 'library(desc); desc <- description$new("!new"); desc$add_author("Bugs", "Bunny", email = "bb@example.com", role=c("ctb", "cph"))' || { 
+  echo "If the error above says 'Error: role must be a string or NULL', you need to update 'desc' R package with the one from Github. Recommended way is to execute the following from R "
+  echo '1. install.packages("remotes")'
+  echo '2. remotes::install_github("r-lib/desc")'
+  echo 'If you are asked what to update, select 2 (packages installed from CRAN only) is the safest if you do not frequently use install_github() function. If you have many libraries from Github, select 1 (All=packages installed from CRAN & Github) may be necessary.'
+  exit 1
+}
 
 Rscript -e 'library(desc) 
 
