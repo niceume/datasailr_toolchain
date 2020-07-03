@@ -55,8 +55,8 @@ To publish an R package on CRAN, you need to follow strict CRAN rules. For this 
     + '#include <R_ext/Print.h>' need to be added to the source file that use Rprintf() function.
 * Authors and Authors@R are updated in DESCRIPTION.
     + To ship with other libraries, copyright holders of those libraries need to be added.
-    + 'desc' package is used to manipulate DESCRIPTION file. I assign multiple roles to some persons, but the functionality was not supported in the original 'desc' package. I sent pull request (#89), but is not merged yet. Please use the [niceume/desc](https://github.com/niceume/desc) version now.
-        1. Download [niceume/desc](https://github.com/niceume/desc) as zip file.
+    + 'desc' package is used to manipulate DESCRIPTION file. I assign multiple roles to some persons, but the functionality is only supported on Github version now (not CRAN).
+        1. Download [r-lib/desc](https://github.com/r-lib/desc) as zip file.
         2. Extract(Unzip) it.
         3. In the directory where desc/ exists, run 'R CMD INSTALL desc'  
 * Some more small changes.
