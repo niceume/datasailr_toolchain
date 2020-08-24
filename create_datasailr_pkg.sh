@@ -85,7 +85,7 @@ rsync -avr --delete --exclude '.gitignore' --exclude '.git' base/datasailr/ tmp/
 
 echo "update: tmp/datasailr_pkg/src/libsailr"
 mkdir -p tmp/datasailr_pkg/src/libsailr
-rsync -avr --delete --exclude '.gitignore' --exclude '.git' base/libsailr/ tmp/datasailr_pkg/src/libsailr
+rsync -avr --delete --exclude '.gitignore' --exclude '.git' --exclude 'dev_env' base/libsailr/ tmp/datasailr_pkg/src/libsailr
 
 echo "update: datasailr_pkg/src/Onigmo"
 mkdir -p tmp/datasailr_pkg/src/Onigmo
@@ -187,51 +187,99 @@ echo "Add third party library authors to DESCRIPTION "
 
 cd tmp/datasailr_pkg
 
-Rscript -e 'library(desc)' || {
-  echo "If the error above says 'Error in library(desc) : there is no package called ‘desc’'. You need to install 'desc' package. Note that install up-to-date version from Github's r-lib/desc repository. CRAN version is a little out-of-date."
-  echo '1. install.packages("remotes")'
-  echo '2. remotes::install_github("r-lib/desc")'
-  echo 'If you are asked what to update, select 2 (packages installed from CRAN only) is the safest if you do not frequently use install_github() function. If you have many libraries from Github, select 1 (All=packages installed from CRAN & Github) may be necessary.'
-  exit 1
+Rscript -e '
+toolchain_file_to_lines = function( filename ){
+    file_con = file(filename, "r")
+    lines = readLines(con = file_con )
+    close(file_con)
+    return( lines )
 }
 
-Rscript -e 'library(desc); desc <- description$new("!new"); desc$add_author("Bugs", "Bunny", email = "bb@example.com", role=c("ctb", "cph"))' || { 
-  echo "If the error above says 'Error: role must be a string or NULL', you need to update 'desc' R package with the one from Github. Recommended way is to execute the following from R "
-  echo '1. install.packages("remotes")'
-  echo '2. remotes::install_github("r-lib/desc")'
-  echo 'If you are asked what to update, select 2 (packages installed from CRAN only) is the safest if you do not frequently use install_github() function. If you have many libraries from Github, select 1 (All=packages installed from CRAN & Github) may be necessary.'
-  exit 1
+toolchain_lines_to_file = function( lines, filename ){
+    file_con = file(filename, "w")
+    writeLines(lines, con = file_con , sep="\n")
+    close(file_con)
 }
 
-Rscript -e 'library(desc) 
+toolchain_update_author_line = function(lines, new_authors_string){
+    lines[toolchain_author_line_pos(lines)] = new_authors_string
+    return(lines)
+}
 
-mydesc = description$new("./DESCRIPTION")
+toolchain_extract_author_line = function( lines ){
+    author_lines_logical = grepl("^Authors@R", lines )
+    author_lines = lines[author_lines_logical]
+    if(length(author_lines) == 1){
+          return(author_lines)
+    }else if(length(author_lines) <= 0){
+        error("Authors@R lines does not exist. Check DESCRIPTION file again.")
+    }else{
+        error("Authors@R lines exist more than once. Check DESCRIPTION file again.")
+    }
+}
 
-# libsailr related authors
-mydesc$add_author("Troy", "Hanson" , role=c("cph", "ctb"), comment="uthash")
+toolchain_author_line_pos = function( lines ){
+    author_line_pos = grep("^Authors@R", lines )
+    if(length(author_line_pos) == 1){
+          return(author_line_pos)
+    }else if(length(author_line_pos) <= 0){
+        error("Authors@R lines does not exist. Check DESCRIPTION file again.")
+    }else{
+        error("Authors@R lines exist more than once. Check DESCRIPTION file again.")
+    }
+}
 
-mydesc$add_author("Howard", "Hinnant" , role=c("cph", "ctb"), comment="date.h")
-mydesc$add_author("Adrian", "Colomitchi" , role=c("cph", "ctb"), comment="date.h")
-mydesc$add_author("Florian", "Dang" , role=c("cph", "ctb"), comment="date.h")
-mydesc$add_author("Paul", "Thompson" , role=c("cph", "ctb"), comment="date.h")
-mydesc$add_author("Tomasz", "Kamiński" , role=c("cph", "ctb"), comment="date.h")
+toolchain_parse_author_line = function( line ){
+    authors_string = sub("^Authors@R:(.+)", "\\1", line)
+    return( eval(parse(text=authors_string)))
+}
 
-mydesc$add_author("Nemanja", "Trifunovic" , role=c("cph", "ctb"), comment="utfcpp")
+toolchain_add_author = function( authors, given, ... ){
+    current_author = person( given = given,  ... )
+    authors = append(authors, current_author)
+    return(authors)
+}
 
-mydesc$add_author("Kim", "Grasman" , role=c("cph", "ctb"), comment="getopt_port")
+toolchain_authors_string = function(authors){
+    r_vec = format(authors, style = "R")
+    r_vec = append( "Authors@R: " , r_vec)
+    return( paste(r_vec, collapse="\n    " ))
+}
 
-mydesc$add_author("Jon", "Clayden" , role=c("cph", "ctb"), comment="ore package")
+lines = toolchain_file_to_lines("./DESCRIPTION")
+line = toolchain_extract_author_line(lines)
+authors = toolchain_parse_author_line(line)
+
+### Additional authors from third party libraries
+# libsailr_related authors
+authors = toolchain_add_author(authors, "Troy", "Hanson", role=c("cph", "ctb"), comment="uthash")
+authors = toolchain_add_author(authors, "Howard", "Hinnant", role=c("cph", "ctb"), comment="date.h")
+authors = toolchain_add_author(authors, "Adrian", "Colomitchi", role=c("cph", "ctb"), comment="date.h")
+authors = toolchain_add_author(authors, "Florian", "Dang", role=c("cph", "ctb"), comment="date.h")
+authors = toolchain_add_author(authors, "Paul", "Thompson", role=c("cph", "ctb"), comment="date.h")
+authors = toolchain_add_author(authors, "Tomasz", "Kamiński", role=c("cph", "ctb"), comment="date.h")
+
+
+authors = toolchain_add_author(authors, "Nemanja", "Trifunovic" , role=c("cph", "ctb"), comment="utfcpp")
+
+authors = toolchain_add_author(authors, "Kim", "Grasman" , role=c("cph", "ctb"), comment="getopt_port")
+
+authors = toolchain_add_author(authors, "Jon", "Clayden" , role=c("cph", "ctb"), comment="ore package")
 
 # onigmo related authors
-mydesc$add_author("K.Kosako", role=c("cph", "ctb"), comment="onigmo author")
-mydesc$add_author("K.Takata", role=c("cph", "ctb"), comment="onigmo author")
-mydesc$add_author("Byte", "", role=c("cph", "ctb"), comment="onigmo contributor")
-mydesc$add_author("KUBO", "Takehiro", role=c("cph", "ctb"), comment="onigmo contributor")
+authors = toolchain_add_author(authors, "K.Kosako", role=c("cph", "ctb"), comment="onigmo author")
+authors = toolchain_add_author(authors, "K.Takata", role=c("cph", "ctb"), comment="onigmo author")
+authors = toolchain_add_author(authors, "Byte", "", role=c("cph", "ctb"), comment="onigmo contributor")
+authors = toolchain_add_author(authors, "KUBO", "Takehiro", role=c("cph", "ctb"), comment="onigmo contributor")
 
-mydesc$add_author("Free Software Foundation, Inc", role=c("cph"))
-mydesc$add_author("X Consortium", role=c("cph"))
+authors = toolchain_add_author(authors, "Free Software Foundation, Inc", role=c("cph"))
+authors = toolchain_add_author(authors, "X Consortium", role=c("cph"))
 
-mydesc$write(file = "./DESCRIPTION")
+### End of additional authors
+
+new_authors_string = toolchain_authors_string(authors)
+lines = toolchain_update_author_line(lines, new_authors_string)
+toolchain_lines_to_file(lines, "./DESCRIPTION")
 ' || exit 1
 
 cd ../..

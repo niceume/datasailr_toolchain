@@ -53,12 +53,8 @@ To publish an R package on CRAN, you need to follow strict CRAN rules. For this 
 * printf() is changed to Rprintf().
     + Calling printf() in R package is not allowed as a CRAN package.
     + '#include <R_ext/Print.h>' need to be added to the source file that use Rprintf() function.
-* Authors and Authors@R are updated in DESCRIPTION.
+* Authors@R is updated in DESCRIPTION.
     + To ship with other libraries, copyright holders of those libraries need to be added.
-    + 'desc' package is used to manipulate DESCRIPTION file. I assign multiple roles to some persons, but the functionality is only supported on Github version now (not CRAN).
-        1. Download [r-lib/desc](https://github.com/r-lib/desc) as zip file.
-        2. Extract(Unzip) it.
-        3. In the directory where desc/ exists, run 'R CMD INSTALL desc'  
 * Some more small changes.
 
 
@@ -67,12 +63,10 @@ To publish an R package on CRAN, you need to follow strict CRAN rules. For this 
 ### Case 1 (Build latest package by yourself)
 
 ```
-# ./create_datasailr_pkg.sh
 # git clone(pull) under base/ directory
 # Put datasailr code and other library codes together under tmp/datasailr_pkg/ directory with some modification.
 ./create_datasailr_pkg.sh
 
-# ./create_packages.sh
 # From tmp/datasailr_pkg, create packages under build directory (build/src_pkg and build/binary_pkg)
 # Note that if building binary package succeeds, the current package is installed to your system.
 ./create_packages.sh
@@ -84,7 +78,6 @@ Enjoy DataSailr!
 ### Case2 (Develop or modify DataSailr by yourself)
 
 ```
-# ./create_datasailr_pkg.sh
 # git clone(pull) under base/ directory
 # Put datasailr code and other library codes together under tmp/datasailr_pkg/ directory with some modification.
 ./create_datasailr_pkg.sh
