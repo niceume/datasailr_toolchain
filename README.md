@@ -15,7 +15,7 @@
 
 ## How to use
 
-There are two main shell scripts, './craete_datasailr_pkg.sh' and './create_packages.sh', for building the package.
+There are two main shell scripts, './craete_datasailr_pkg.sh' and './create_package.sh', for building the package.
 
 * './create_datasailr_pkg.sh' 
     1. 'git clone' libsailr, Onigmo and datasailr ('git pull' if respository already exists) under base/ directory. (If base/ does not exist yet, it is created.)
@@ -24,11 +24,16 @@ There are two main shell scripts, './craete_datasailr_pkg.sh' and './create_pack
         + If no-preclean is passed, this step is skipped. (e.g.) './create_datasailr_pkg.sh no-preclean'
     3. Sync datasailr source tree from base/datasailr to under tmp/ diretory using rsync, followed by syncing libsailr and Onigmo under tmp/datasailr_pkg/src/ using rsync.
     4. Conduct souce modifications for CRAN package (details are mentioned later)
-* './create_packages.sh'
+* './create_package.sh'
     1. Copy tmp/datasailr_pkg under build/src_pkg and build/binary_pkg directories.
     2. Under build/src_pkg, 'R CMD build datasailr_pkg 'is executed, which creates source package.
     3. Under build/binary_pkg, 'R CMD INSTALL datasailr_pkg --build' is executed, which creates binary pacakge.
         + Note that this step also installs the current datasailr package to your system if it is successfully built.
+        + Note that switching on/off debug option is now supported by DataSailr's package installation.
+            + Specifying the following option results in passing corresponding argument to R CMD INSTALL.
+                + libsailr-debug passes  --configure-args="--enable-libsailr-debug"
+                + datasailr-debug passes --configure-args="--enable-datasailr-debug"
+                + (e.g.) ./create_package.sh libsailr-debug datasailr-debug
 
 
 Some more scripts
@@ -69,7 +74,7 @@ To publish an R package on CRAN, you need to follow strict CRAN rules. For this 
 
 # From tmp/datasailr_pkg, create packages under build directory (build/src_pkg and build/binary_pkg)
 # Note that if building binary package succeeds, the current package is installed to your system.
-./create_packages.sh
+./create_package.sh
 ```
 
 Enjoy DataSailr!
@@ -91,7 +96,7 @@ Enjoy DataSailr!
 ./create_datasailr_pkg.sh no-git
 
 # Try to build
-./create_packages.sh
+./create_package.sh
 ```
 
 If build succeeds,
