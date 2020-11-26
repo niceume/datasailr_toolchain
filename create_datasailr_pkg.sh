@@ -95,6 +95,7 @@ rsync -avr --delete --exclude '.gitignore' --exclude '.git' base/Onigmo/ tmp/dat
 
 echo "run autogen.sh for Onigmo"
 cd tmp/datasailr_pkg/src/Onigmo
+awk '/AC_CONFIG_HEADER/ && !done {print ; print "AM_MAINTAINER_MODE([enable])"; done=1 ; next }1' configure.ac > configure.ac.tmp && mv configure.ac.tmp configure.ac
 ./autogen.sh
 cd ../../../..
 

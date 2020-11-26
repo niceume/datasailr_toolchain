@@ -61,6 +61,7 @@ To publish an R package on CRAN, you need to follow strict CRAN rules. For this 
 * Authors@R is updated in DESCRIPTION.
     + To ship with other libraries, copyright holders of those libraries need to be added.
 * Some more small changes.
+    + Add AM_MAINTAINER_MODE([enable]) to Onigmo's configure.ac
 
 
 ## Examples
