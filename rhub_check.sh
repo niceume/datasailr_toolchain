@@ -8,6 +8,20 @@ target_package=`ls -t -1 build/src_pkg/datasailr_* | head -n 1 | xargs basename`
 
 echo "Target package is ${target_package}"
 
+echo "Did you run R CMD check --as-cran before you test on Rhub?"
+echo -n "INPUT y or Y to continue: "
+read continue_input
+if [ "$continue_input" = "y" ]
+then
+  echo $continue_input
+elif  [ "$continue_input" = "Y" ]
+then
+  echo $continue_input
+else
+  echo "Abort."
+  exit 1;
+fi
+
 # $# represents the number of arguments.
 if [ $# -gt 0 ]
 then
@@ -76,7 +90,13 @@ case "$ARGS" in
 echo "macos platforms"
 Rscript -e "
 library(rhub)
-rhub::check_on_macos(path='${target_package}')
+platforms = c(
+'macos-highsierra-release',
+'macos-highsierra-release-cran'
+)
+for(platf in platforms){
+  rhub::check(path='${target_package}', platform=platf)
+}
 "
   ;;
 esac
