@@ -67,6 +67,7 @@ then
   echo "git-pull : Onigmo"
   cd ./Onigmo
   git pull origin master
+  git merge dd8a18af5c2f2871104b1bdbf3bbb597ec9e4665  # Feb 4 2021
   cd ..
 else
   git clone ${onigmo_remote_repository}
