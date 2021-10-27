@@ -102,7 +102,7 @@ cd ../../../..
 
 echo "run autoconf and create configure script for DataSailr"
 cd tmp/datasailr_pkg
-autoconf
+autoconf --warnings=obsolete
 cd ../..
 
 echo "lt~obsolete.m4 is renamed to lt_obsolete.m4"
