@@ -64,14 +64,14 @@ fi
 
 if [ -d Onigmo/.git ]
 then
-  echo "git-pull : Onigmo"
-  cd ./Onigmo
-  git pull origin master
-  git merge dd8a18af5c2f2871104b1bdbf3bbb597ec9e4665  # Feb 4 2021
-  cd ..
+  echo "git merge : Onigmo(Feb 4 2021)"
 else
   git clone ${onigmo_remote_repository}
 fi
+cd ./Onigmo
+git checkout dd8a18af5c2f2871104b1bdbf3bbb597ec9e4665 -b temp  # Feb 4 2021
+cd ..
+
 
 cd ..
 
@@ -93,6 +93,11 @@ mkdir -p tmp/datasailr_pkg/src/Onigmo
 rsync -avr --delete --exclude '.gitignore' --exclude '.git' base/Onigmo/ tmp/datasailr_pkg/src/Onigmo
 
 #############################################
+
+echo "apply patch for Onigmo"
+cd tmp/datasailr_pkg/src/Onigmo
+patch < ../../../../patch/Onigmo-dd8a18a.patch
+cd ../../../..
 
 echo "run autogen.sh for Onigmo"
 cd tmp/datasailr_pkg/src/Onigmo
