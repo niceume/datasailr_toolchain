@@ -265,7 +265,7 @@ authors = toolchain_add_author(authors, "Adrian", "Colomitchi", role=c("cph", "c
 authors = toolchain_add_author(authors, "Florian", "Dang", role=c("cph", "ctb"), comment="date.h")
 authors = toolchain_add_author(authors, "Paul", "Thompson", role=c("cph", "ctb"), comment="date.h")
 authors = toolchain_add_author(authors, "Tomasz", "Kamiński", role=c("cph", "ctb"), comment="date.h")
-
+authors = toolchain_add_author(authors, "Jiangang", "Zhuang", role=c("cph", "ctb"), comment="date.h")
 
 authors = toolchain_add_author(authors, "Nemanja", "Trifunovic" , role=c("cph", "ctb"), comment="utfcpp")
 
