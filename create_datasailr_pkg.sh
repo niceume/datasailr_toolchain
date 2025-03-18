@@ -96,7 +96,7 @@ rsync -avr --delete --exclude '.gitignore' --exclude '.git' base/Onigmo/ tmp/dat
 
 echo "apply patch for Onigmo"
 cd tmp/datasailr_pkg/src/Onigmo
-patch < ../../../../patch/Onigmo-dd8a18a.patch
+patch -p1 < ../../../../patch/Onigmo-dd8a18a.patch
 cd ../../../..
 
 echo "apply patch for date.h in libsailr"
