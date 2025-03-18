@@ -99,6 +99,11 @@ cd tmp/datasailr_pkg/src/Onigmo
 patch < ../../../../patch/Onigmo-dd8a18a.patch
 cd ../../../..
 
+echo "apply patch for date.h in libsailr"
+cd tmp/datasailr_pkg/src/libsailr
+patch -p1 < ../../../../patch/libsailr-date.h-0b33665.patch
+cd ../../../..
+
 echo "run autogen.sh for Onigmo"
 cd tmp/datasailr_pkg/src/Onigmo
 awk '/AC_CONFIG_HEADER/ && !done {print ; print "AM_MAINTAINER_MODE([enable])"; done=1 ; next }1' configure.ac > configure.ac.tmp && mv configure.ac.tmp configure.ac
