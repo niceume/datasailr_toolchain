@@ -156,6 +156,11 @@ find tmp/datasailr_pkg/src/libsailr | egrep '(\.c|\.h)$' | xargs  sed -r -e '/^\
   s/^(\s*)printf(.*)$/\1Rprintf\2/g
 }' -i
 
+echo "Comment out lines beginning with std::cout"
+
+find tmp/datasailr_pkg/src/libsailr | egrep '(\.cpp|\.hpp)$' | xargs  sed -r -e '/^\s*std::cout/{
+  s/^(\s*)std::cout(.*)$/\1\/\/ std::cout \2/g
+}' -i
 
 echo 'comment out all the printf() lines under libsailr'
 grep -rl printf tmp/datasailr_pkg/src/libsailr  | xargs  sed -r -e '/^\s*printf/{
