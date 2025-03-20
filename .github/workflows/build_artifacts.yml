@@ -1,0 +1,34 @@
+name: DataSailr Package Builder
+
+on:
+  push:
+    tags:     # Pattern matched against refs/tags
+      - '*.*.*'   # Push events to every tag that contains x.y.z without /
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install build packages
+      run: sudo apt install build-essential bison flex autotools-dev autoconf r-base r-base-dev
+
+    - name: Install R packages
+      run: sudo Rscript -e "install.packages('Rcpp')"
+
+    - name: Create DataSailr scource tree
+      run: ./create_datasailr_source.sh
+      
+    - name: Create DataSailr package
+      run: ./build_datasailr_package.sh
+
+    - uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          build/src_pkg/datasailr_latest.tgz
+          build/binary_pkg/datasailr_latest.ubuntu-latest.tgz
+        make_latest: true
+        token: ${{ secrets.DATASAILR_TOOLCHAIN_ACCESS_TOKEN }}
