@@ -71,14 +71,14 @@ case "$ARGS" in
       mkdir -p ${binary_pkg_dir}
       cp -R tmp/datasailr_pkg ${binary_pkg_dir}/
       cd ${binary_pkg_dir}
-      R CMD INSTALL datasailr_pkg --build --configure-args="${debug_options}"
+      sudo R CMD INSTALL datasailr_pkg --build --configure-args="${debug_options}"
       case "$ARGS" in
         *keep-build*) ;;
         *)
           rm -R -f datasailr_pkg
         ;;
       esac
-      cp "datasailr_${PKG_VERSION}_*.tar.gz" "datasailr_latest.ubuntu-latest.tar.gz"
+      cp datasailr_${PKG_VERSION}_*.tar.gz "datasailr_latest.binary.tar.gz"
       cd -
       echo "R CMD build finished successfully under binary_pkg directory"
       ;;

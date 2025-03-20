@@ -28,7 +28,7 @@ jobs:
     - uses: softprops/action-gh-release@v2
       with:
         files: |
-          build/src_pkg/datasailr_latest.tgz
-          build/binary_pkg/datasailr_latest.ubuntu-latest.tgz
+          build/src_pkg/datasailr_latest.tar.gz
+          build/binary_pkg/datasailr_latest.binary.tar.gz
         make_latest: true
         token: ${{ secrets.DATASAILR_TOOLCHAIN_ACCESS_TOKEN }}
