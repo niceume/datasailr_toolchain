@@ -44,6 +44,8 @@ case "$ARGS" in
     ;;
 esac
 
+PKG_VERSION=`grep -E "^\s*Version" tmp/datasailr_pkg/DESCRIPTION | sed -n -E 's/^\s*Version:\s*//p'`
+
 case "$ARGS" in
   *src*)  
       echo "Building ource package"
@@ -57,6 +59,7 @@ case "$ARGS" in
           rm -R -f datasailr_pkg
         ;;
       esac
+      cp "datasailr_${PKG_VERSION}.tar.gz" "datasailr_latest.tar.gz"
       cd -
       echo "R CMD build finished successfully under src_pkg directory"
       ;;
@@ -75,6 +78,7 @@ case "$ARGS" in
           rm -R -f datasailr_pkg
         ;;
       esac
+      cp "datasailr_${PKG_VERSION}_*.tar.gz" "datasailr_latest.ubuntu-latest.tar.gz"
       cd -
       echo "R CMD build finished successfully under binary_pkg directory"
       ;;
